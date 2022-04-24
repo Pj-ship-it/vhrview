@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="display: flex;justify-content: space-between">
-      <el-button icon="el-icon-plus" type="primary" @click="showAddAdjustView">添加员工异动调薪记录</el-button>
+      <el-button icon="el-icon-plus" type="primary" @click="showAddAdjustView">新增</el-button>
       <el-button icon="el-icon-refresh" type="success" @click="initAdjust"></el-button>
     </div>
     <div style="margin-top: 10px">
@@ -70,12 +70,6 @@
               width="110">
       </el-table-column>
         <el-table-column
-                prop="effectTime"
-                label="生效时间"
-                align="center"
-                width="110">
-        </el-table-column>
-        <el-table-column
                 label="操作"
                 align="center">
           <template slot-scope="scope">
@@ -118,20 +112,14 @@
         <el-form-item label="现岗位名称" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="adjust.newPost" autocomplete="off"></el-input>
         </el-form-item>
+        <el-form-item label="调薪原因" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="adjust.adjustReason" autocomplete="off"></el-input>
+        </el-form-item>
         <el-form-item label="调前工资" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="adjust.beforeSalary" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="调后工资" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="adjust.afterSalary" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="生效时间" :label-width="formLabelWidth" style="width: 80%">
-          <el-date-picker
-                  v-model="adjust.effectTime"
-                  type="date"
-                  style="width: 100%"
-                  value-format="yyyy-MM-dd"
-                  placeholder="生效时间">
-          </el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -148,7 +136,7 @@
     data() {
       return {
         dialogVisible: false,
-        dialogTitle: '添加员工异动调薪',
+        dialogTitle: '新增',
         adjusts: [],
         adjust: {
           id: "",
@@ -160,8 +148,7 @@
           newPost: "",
           adjustReason: "",
           beforeSalary: "",
-          afterSalary: "",
-          effectTime: ""
+          afterSalary: ""
         },
         formLabelWidth: '120px'
       }
@@ -171,7 +158,7 @@
     },
     methods: {
       deleteAdjust(data) {
-        this.$confirm('此操作将删除【' + data.adjust.name + '】培训记录，是否继续？','提示', {
+        this.$confirm('此操作将删除【' + data.name + '】培训记录，是否继续？','提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning'
@@ -208,14 +195,13 @@
           newPost: "",
           adjustReason: "",
           beforeSalary: "",
-          afterSalary: "",
-          effectTime: ""
+          afterSalary: ""
         }
         this.dialogVisible = true;
-        this.dialogTitle = '添加员工异动调薪记录';
+        this.dialogTitle = '新增';
       },
       showEditAdjustView(data) {
-        this.dialogTitle = '修改员工异动调薪';
+        this.dialogTitle = '编辑';
         this.dialogVisible = true;
         this.adjust.id = data.id;
         this.adjust.name = data.name;
@@ -227,7 +213,6 @@
         this.adjust.adjustReason = data.adjustReason;
         this.adjust.beforeSalary = data.beforeSalary;
         this.adjust.afterSalary = data.afterSalary;
-        this.adjust.effectTime = data.effectTime;
       },
       doAddAdjust() {
         if (this.adjust.id) {
