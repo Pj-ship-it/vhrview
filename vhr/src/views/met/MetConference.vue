@@ -6,7 +6,7 @@
     </div>
     <div style="margin-top: 10px">
       <el-table
-              :data="conference"
+              :data="conferences"
               border
               stripe
               style="width: 100%">
@@ -94,23 +94,23 @@
         <el-form-item label="开始时间" :label-width="formLabelWidth" style="width: 80%">
           <el-date-picker
                   v-model="conference.startTime"
-                  type="date"
+                  type="datetime"
                   style="width: 100%"
-                  value-format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   placeholder="开始时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="结束时间" :label-width="formLabelWidth" style="width: 80%">
           <el-date-picker
                   v-model="conference.endTime"
-                  type="date"
+                  type="datetime"
                   style="width: 100%"
-                  value-format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd HH:mm:ss"
                   placeholder="结束时间">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="会议状态" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="conference.endTime" autocomplete="off"></el-input>
+          <el-input v-model="conference.status" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -128,16 +128,16 @@
       return {
         dialogVisible: false,
         dialogTitle: '新增',
-        conferences: [],
+        conferences:[],
         conference: {
-          id: "",
-          title: "",
-          meetingPlace: "",
-          convener: "",
-          contact: "",
-          startTime: "",
-          endTime: "",
-          status: ""
+          id: undefined,
+          title: undefined,
+          meetingPlace: undefined,
+          convener: undefined,
+          contact: undefined,
+          startTime: undefined,
+          endTime: undefined,
+          status: undefined
         },
         formLabelWidth: '120px'
       }
@@ -168,7 +168,7 @@
       initConference() {
         this.getRequest("/meeting/conference/").then(resp => {
           if (resp) {
-            this.conference = resp.data;
+            this.conferences = resp.data;
           }
         })
       },

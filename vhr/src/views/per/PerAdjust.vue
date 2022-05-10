@@ -6,7 +6,7 @@
     </div>
     <div style="margin-top: 10px">
       <el-table
-              :data="adjust"
+              :data="adjusts"
               border
               stripe
               style="width: 100%">
@@ -73,21 +73,13 @@
                 label="操作"
                 align="center">
           <template slot-scope="scope">
-            <el-button @click="showEditAdjustView(scope.row)">编辑</el-button>
+            <el-button type="text" @click="showEditAdjustView(scope.row)">编辑</el-button>
             <el-button type="danger" @click="deleteAdjust(scope.row)">删除</el-button>
           </template>
 
         </el-table-column>
       </el-table>
-      <div style="display: flex;justify-content: flex-end">
-        <el-pagination
-                background
-                @size-change="sizeChange"
-                @current-change="currentChange"
-                layout="sizes, prev, pager, next, jumper, ->, total, slot"
-                :total="total">
-        </el-pagination>
-      </div>
+
     </div>
     <el-dialog :title=dialogTitle :visible.sync="dialogVisible">
       <el-form :model="adjust">
@@ -137,18 +129,18 @@
       return {
         dialogVisible: false,
         dialogTitle: '新增',
-        adjusts: [],
+        adjusts:[],
         adjust: {
-          id: "",
-          name: "",
-          idCard: "",
-          eid: "",
-          changeProperty: "",
-          originPost: "",
-          newPost: "",
-          adjustReason: "",
-          beforeSalary: "",
-          afterSalary: ""
+          id: undefined,
+          name: undefined,
+          idCard: undefined,
+          eid: undefined,
+          changeProperty: undefined,
+          originPost: undefined,
+          newPost: undefined,
+          adjustReason: undefined,
+          beforeSalary: undefined,
+          afterSalary: undefined
         },
         formLabelWidth: '120px'
       }
@@ -179,7 +171,7 @@
       initAdjust() {
         this.getRequest("/personnel/adjust/").then(resp => {
           if (resp) {
-            this.adjust = resp.data;
+            this.adjusts = resp.data;
           }
         })
       },
@@ -216,6 +208,7 @@
       },
       doAddAdjust() {
         if (this.adjust.id) {
+          console.log(this.adjust.id)
           this.putRequest('/personnel/adjust/',this.adjust).then(resp => {
             if (resp) {
               this.initAdjust();
