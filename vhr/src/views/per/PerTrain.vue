@@ -16,32 +16,44 @@
                 width="55">
         </el-table-column>
         <el-table-column
-                prop="eid"
-                label="员工编号"
-                align="center"
-                width="180">
-        </el-table-column>
-        <el-table-column
-                prop="employee.name"
+                prop="name"
                 label="姓名"
                 align="center"
-                width="180">
+                width="130">
         </el-table-column>
         <el-table-column
-                prop="trainDate"
-                label="培训日期"
+                prop="participants"
+                label="参加对象"
                 align="center"
-                width="180">
+                width="130">
         </el-table-column>
         <el-table-column
-                prop="trainContent"
-                label="培训内容"
+                prop="theme"
+                label="主题"
                 align="center"
-                width="180">
+                width="130">
         </el-table-column>
         <el-table-column
-                prop="remark"
-                label="备注"
+                prop="lecturer"
+                label="主讲老师"
+                align="center"
+                width="130">
+        </el-table-column>
+        <el-table-column
+                prop="content"
+                label="内容"
+                align="center"
+                width="150">
+        </el-table-column>
+        <el-table-column
+                prop="place"
+                label="地点"
+                align="center"
+                width="150">
+        </el-table-column>
+        <el-table-column
+                prop="shareTime"
+                label="分享时间"
                 align="center"
                 width="180">
         </el-table-column>
@@ -67,26 +79,32 @@
     </div>
     <el-dialog :title=dialogTitle :visible.sync="dialogVisible">
       <el-form :model="empTrain">
-        <el-form-item label="id" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="empTrain.id" autocomplete="off"></el-input>
+        <el-form-item label="姓名" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="eid" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="empTrain.eid" autocomplete="off"></el-input>
+        <el-form-item label="参加对象" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.participants" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="trainDate" :label-width="formLabelWidth" style="width: 80%">
+        <el-form-item label="主题" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.theme" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="主讲老师" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.lecturer" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="内容" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.content" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="地点" :label-width="formLabelWidth" style="width: 80%">
+          <el-input v-model="empTrain.place" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="分享时间" :label-width="formLabelWidth" style="width: 80%">
           <el-date-picker
-                  v-model="empTrain.trainDate"
-                  type="date"
+                  v-model="empTrain.shareTime"
+                  type="datetime"
                   style="width: 100%"
                   value-format="yyyy-MM-dd"
-                  placeholder="培训日期">
+                  placeholder="分享时间">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="trainContent" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="empTrain.trainContent" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="remark" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="empTrain.remark" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,19 +121,22 @@
     data() {
       return {
         dialogVisible: false,
-        dialogTitle: '添加员工培训',
+        dialogTitle: '新增',
         empTrains: [],
         total: 0,
         currentPage: 1,
         currentSize: 10,
         empTrain: {
           id: "",
-          eid: "",
-          trainDate: "",
-          trainContent: "",
-          remark: ""
+          name: "",
+          participants: "",
+          theme: "",
+          lecturer: "",
+          content: "",
+          place: "",
+          shareTime: ""
         },
-        formLabelWidth: '120px'
+        formLabelWidth: '130px'
       }
     },
     mounted () {
@@ -131,7 +152,8 @@
         this.initEmpTrains();
       },
       deleteEmpTrain(data) {
-        this.$confirm('此操作将删除【' + data.employee.name + '】培训记录，是否继续？','提示', {
+        console.log("delete")
+        this.$confirm('此操作将删除【' + data.name + '】培训记录，是否继续？','提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning'
@@ -150,10 +172,9 @@
         })
       },
       initEmpTrains() {
-        this.getRequest("/personnel/train/?page="+this.currentPage + '&size=' + this.currentSize).then(resp => {
+        this.getRequest("/personnel/train/").then(resp => {
           if (resp) {
             this.empTrains = resp.data;
-            this.total = resp.total;
           }
         })
       },
@@ -161,10 +182,13 @@
         //数据初始化
         this.empTrain = {
           id: "",
-          eid: "",
-          trainDate: "",
-          trainContent: "",
-          remark: ""
+          name: "",
+          participants: "",
+          theme: "",
+          lecturer: "",
+          content: "",
+          place: "",
+          shareTime: ""
         }
         this.dialogVisible = true;
         this.dialogTitle = '添加员工培训';
@@ -173,13 +197,17 @@
         this.dialogTitle = '修改员工培训';
         this.dialogVisible = true;
         this.empTrain.id = data.id;
-        this.empTrain.eid = data.eid;
-        this.empTrain.trainDate = data.trainDate;
-        this.empTrain.trainContent = data.trainContent;
-        this.empTrain.remark = data.remark;
+        this.empTrain.name = data.name;
+        this.empTrain.participants = data.participants;
+        this.empTrain.theme = data.theme;
+        this.empTrain.lecturer = data.lecturer;
+        this.empTrain.content = data.content;
+        this.empTrain.place = data.place;
+        this.empTrain.shareTime = data.shareTime;
       },
       doAddEmpTrain() {
         if (this.empTrain.id) {
+          console.log(this.empTrain.id)
           this.putRequest('/personnel/train/',this.empTrain).then(resp => {
             if (resp) {
               this.initEmpTrains();
@@ -187,6 +215,7 @@
             }
           })
         } else {
+          console.log(this.empTrain.id)
           this.postRequest('/personnel/train/',this.empTrain).then(resp => {
             if (resp) {
               this.initEmpTrains();

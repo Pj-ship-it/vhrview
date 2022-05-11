@@ -82,10 +82,7 @@
 
     </div>
     <el-dialog :title=dialogTitle :visible.sync="dialogVisible">
-      <el-form :model="adjust">
-        <el-form-item label="id" :label-width="formLabelWidth" style="width: 80%">
-          <el-input v-model="adjust.id" autocomplete="off"></el-input>
-        </el-form-item>
+      <el-form :model="adjust" ref="adjustForm">
         <el-form-item label="员工编号" :label-width="formLabelWidth" style="width: 80%">
           <el-input v-model="adjust.eid" autocomplete="off"></el-input>
         </el-form-item>
@@ -149,8 +146,8 @@
       this.initAdjust();
     },
     methods: {
-      deleteAdjust(data) {
-        this.$confirm('此操作将删除【' + data.name + '】培训记录，是否继续？','提示', {
+      deleteAdjust (data) {
+        this.$confirm('此操作将删除【' + data.name + '】培训记录，是否继续？', '提示', {
           cancelButtonText: '取消',
           confirmButtonText: '确定',
           type: 'warning'
@@ -168,17 +165,16 @@
           });
         })
       },
-      initAdjust() {
+      initAdjust () {
         this.getRequest("/personnel/adjust/").then(resp => {
           if (resp) {
             this.adjusts = resp.data;
           }
         })
       },
-      showAddAdjustView() {
+      showAddAdjustView () {
         //数据初始化
         this.adjust = {
-          id: "",
           name: "",
           idCard: "",
           eid: "",
@@ -192,7 +188,7 @@
         this.dialogVisible = true;
         this.dialogTitle = '新增';
       },
-      showEditAdjustView(data) {
+      showEditAdjustView (data) {
         this.dialogTitle = '编辑';
         this.dialogVisible = true;
         this.adjust.id = data.id;
@@ -206,26 +202,34 @@
         this.adjust.beforeSalary = data.beforeSalary;
         this.adjust.afterSalary = data.afterSalary;
       },
-      doAddAdjust() {
+      doAddAdjust () {
         if (this.adjust.id) {
-          console.log(this.adjust.id)
-          this.putRequest('/personnel/adjust/',this.adjust).then(resp => {
-            if (resp) {
-              this.initAdjust();
-              this.dialogVisible = false;
+          this.$refs['adjustForm'].validate(valid => {
+            if (valid) {
+              console.log(this.adjust.id)
+              this.putRequest('/personnel/adjust/', this.adjust).then(resp => {
+                if (resp) {
+                  this.initAdjust();
+                  this.dialogVisible = false;
+                }
+              })
             }
-          })
+          });
         } else {
-          this.postRequest('/personnel/adjust/',this.adjust).then(resp => {
-            if (resp) {
-              this.initAdjust();
-              this.dialogVisible = false;
+          this.$refs['adjustForm'].validate(valid => {
+            if (valid) {
+              this.postRequest('/personnel/adjust/', this.adjust).then(resp => {
+                if (resp) {
+                  this.initAdjust();
+                  this.dialogVisible = false;
+                }
+              });
             }
-          })
+          });
         }
       }
     }
-  }
+    }
 </script>
 
 <style scoped>
